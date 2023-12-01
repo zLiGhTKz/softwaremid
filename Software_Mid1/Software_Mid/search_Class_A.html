@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>查詢課程</title>
+    <link rel="stylesheet" href="search_class_A.css" />
+</head>
+
+<body>
+    <h1>Course Search</h1>
+    <form onsubmit="searchCourse()">
+        <label for="course_id_checkbox">Course ID:</label>
+        <input type="checkbox" id="course_id_checkbox" name="course_id_checkbox">
+        <input type="text" id="course_id" placeholder="Enter course ID">
+        <br><br>
+
+        <label for="course_name_checkbox">Course Name:</label>
+        <input type="checkbox" id="course_name_checkbox" name="course_name_checkbox">
+        <input type="text" id="course_name" placeholder="Enter course name">
+        <br><br>
+
+        <label for="course_depart_checkbox">Course Depart:</label>
+        <input type="checkbox" id="course_depart_checkbox" name="course_depart_checkbox">
+        <select id="course_depart">
+            <option value="">Select Depart</option>
+            <option value="哲學">哲學</option>
+            <option value="外文">外文</option>
+            <option value="系内">系内</option>
+            <option value="資訊">資訊</option>
+            <option value="通識">通識</option>
+            <option value="體育">體育</option>
+            <!-- 其他部門選項 -->
+        </select>
+        <br><br>
+
+        <input type="submit" value="Search">
+    </form>
+
+    <div id="course-info"></div>
+
+    <script>
+        var AllClasses = {
+            //
+            Class_Japan: {
+                No: "01",//ID
+                depart: "外文",//系級
+                name: "日文",
+                Time_Start_to_End_1: "星期一 8:10 ~ 9:00",
+                Time_Start_to_End_2: "星期一 9:10 ~ 10:00",
+                Time_Start_to_End_3: "星期四 15:10 ~ 16:00",
+                Teacher: "AAAAA",
+                amount_current: 58,//目前人數
+                amount_full: 60,//額滿人數
+                Show_Amount : function () {
+                    this.amount_current = parseInt(localStorage.getItem('Class_Japan_amount'));
+                    alert(amount_current);
+                },
+            },
+
+
+            Class_Korea: {
+                No: "02",
+                depart: "外文",
+                name: "韓文",
+                Time_Start_to_End_1: "星期二 8:10 ~ 9:00",
+                Time_Start_to_End_2: "星期二 9:10 ~ 10:00",
+                Teacher: "Betty",
+                amount_current: 55,
+                amount_full: 68,
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }
+            },
+
+            Class_Spain: {
+                No: "03",
+                depart: "外文",
+                name: "西班牙文",
+                Time_Start_to_End_1: "星期五 15:10 ~ 16:00",
+                Teacher: "Cat",
+                amount_current: 50,
+                amount_full: 60,
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }
+            },
+
+            Class_Red_Book: {
+                No: "04",
+                depart: "哲學",
+                name: "毛語錄",
+                Time_Start_to_End_1: "星期一 13:10 ~ 14:00",
+                Time_Start_to_End_2: "星期一 14:10 ~ 15:00",
+                Time_Start_to_End_3: "星期三 15:10 ~ 16:00",
+                Teacher: "毛澤東",
+                amount_current: 60,
+                amount_full: 90,
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }
+            },
+
+            Class_System: {
+                No: "05",//ID
+                depart: "資工",//系級
+                name: "作業系統",
+                Time_Start_to_End_1: "星期二 14:10 ~ 15:00",
+                Time_Start_to_End_2: "星期三 15:10 ~ 16:00",
+                Time_Start_to_End_3: "星期三 16:10 ~ 17:00",
+                Teacher: "Lin",
+                amount_current: 60,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                }//額滿上限
+            },
+
+            Class_AI: {
+                No:"06",//ID
+                depart: "資工",//系級
+                name: "人工智慧",
+                Time_Start_to_End_1: "星期三 13:10 ~ 14:00",
+                Time_Start_to_End_2: "星期三 14:10 ~ 15:00",
+                Time_Start_to_End_3: "星期三 15:10 ~ 16:00",
+                Teacher: "AI",
+                amount_current: 70,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 80,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Data: {
+                No: "07",//ID
+                depart: "資工",//系級
+                name: "資料庫",
+                Time_Start_to_End_1: "星期四 8:10 ~ 9:00",
+                Time_Start_to_End_2: "星期四 9:10 ~ 10:00",
+                Teacher: "llllll",
+                amount_current: 72,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 90,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Think: {
+                No: "08",//ID
+                depart: "通識",//系級
+                name: "批判思考",
+                Time_Start_to_End_1: "星期一 18:30 ~ 19:20",
+                Time_Start_to_End_2: "星期一 19:30 ~ 20:20",
+                Teacher: "TTTTTT",
+                amount_current: 47,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Music: {
+                No: "09",//ID
+                depart: "通識",//系級
+                name: "音樂",
+                Time_Start_to_End_1: "星期二 13:10 ~ 14:00",
+                Time_Start_to_End_2: "星期二 14:10 ~ 15:00",
+                Teacher: "Ama",
+                amount_current: 58,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 70,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Text: {
+                No: "10",//ID
+                depart: "通識",//系級
+                name: "專案管理",
+                Time_Start_to_End_1: "星期一 18:30 ~ 19:20",
+                Time_Start_to_End_2: "星期一 19:30 ~ 20:20",
+                Teacher: "Idontknow",
+                amount_current: 47,//目前人數
+                Join_Class: function(){
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function(){
+                    if( this.amount_current == this.amount_full ){
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            //D1031538
+            Class_programlanguange: {
+                No: "11",//ID
+                depart: "資訊",//系級
+                name: "程式設計",
+                Time_Start_to_End_1: "星期一 13:10 ~ 14:00",
+                Time_Start_to_End_1: "星期一 14:10 ~ 15:00",
+                Time_Start_to_End_3: "星期四 16:10 ~ 17:00",
+                Teacher: "ZZZ",
+                amount_current: 49,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_webdesign: {
+                No: "12",//ID
+                depart: "資訊",//系級
+                name: "Web程式設計",
+                Time_Start_to_End_1: "星期二 13:10 ~ 14:00",
+                Time_Start_to_End_2: "星期二 14:10 ~ 15:00",
+                Time_Start_to_End_3: "星期三 16:10 ~ 17:00",
+                Teacher: "XXX",
+                amount_current: 59,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_database: {
+                No: "13",//ID
+                depart: "資訊",//系級
+                name: "資料庫系統",
+                Time_Start_to_End_1: "星期二 09:10 ~ 10:00",
+                Time_Start_to_End_2: "星期五 15:10 ~ 16:00",
+                Time_Start_to_End_3: "星期五 16:10 ~ 17:00",
+                Teacher: "CCC",
+                amount_current: 48,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_logicdesign: {
+                No: "14",//ID
+                depart: "資訊",//系級
+                name: "邏輯設計",
+                Time_Start_to_End_1: "星期五 09:10 ~ 10:00",
+                Time_Start_to_End_2: "星期五 10:10 ~ 11:00",
+                Time_Start_to_End_3: "星期五 11:10 ~ 12:00",
+                Teacher: "JJXX",
+                amount_current: 21,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 60,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+            //3
+
+            Class_Basketball: {
+                No: "15",
+                depart: "體育",
+                name: "籃球",
+                Time_Start_to_End_1: "星期二 14:10 ~ 15:00",
+                Time_Start_to_End_2: "星期二 15:10 ~ 16:00",
+                Teacher: "Coach邱",
+                amount_current: 25,
+                amount_full: 30,
+                full_flag: function () {
+                    if (this.amount_current === this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }
+            },
+
+            Class_Meditation: {
+                No: "16",
+                depart: "心理",
+                name: "冥想",
+                Time_Start_to_End_1: "星期四 15:10 ~ 16:00",
+                Teacher: "Toyz",
+                amount_current: 20,
+                amount_full: 25,
+                full_flag: function () {
+                    if (this.amount_current === this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }
+            },
+            //4
+            Class_Comics_Japan2: {
+                No: "17",//ID
+                depart: "外文",//系級
+                name: "漫畫日語",
+                Time_Start_to_End_1: "星期二 8:10 ~ 9:00",
+                Time_Start_to_End_2: "星期二 9:10 ~ 10:00",
+                Teacher: "藤吉時人",
+                amount_current: 50,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 50,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Fitness_Concept2: {
+                No: "18",//ID
+                depart: "體育",//系級
+                name: "健身基礎觀念",
+                Time_Start_to_End_1: "星期四 15:10 ~ 16:00",
+                Time_Start_to_End_2: "星期四 16:10 ~ 17:00",
+                Teacher: "李鴻俊",
+                amount_current: 49,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 65,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+
+            Class_Tennis1: {
+                No: "19",//ID
+                depart: "體育",//系級
+                name: "網球",
+                Time_Start_to_End_1: "星期三 15:10 ~ 16:00",
+                Time_Start_to_End_2: "星期三 16:10 ~ 17:00",
+                Teacher: "吳天慶",
+                amount_current: 57,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 65,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                },//額滿上限
+            },
+            Class_Unix: {
+                No: "20",//ID
+                depart: "資訊",//系級
+                name: "unix應用實務",
+                Time_Start_to_End_1: "星期三 10:10 ~ 11:00",
+                Time_Start_to_End_2: "星期三 11:10 ~ 12:00",
+                Teacher: "陳傑",
+                amount_current: 37,//目前人數
+                Join_Class: function () {
+                    this.amount_current += 1;
+                },
+                amount_full: 50,//額滿人數
+                full_flag: function () {
+                    if (this.amount_current == this.amount_full) {
+                        alert("人數已滿");
+                    }
+                }//額滿上限
+            },
+
+
+
+        };
+
+        function searchCourse() {
+            event.preventDefault(); // 防止表單提交刷新頁面
+
+            var courseId = document.getElementById('course_id').value.toLowerCase();
+            var courseName = document.getElementById('course_name').value.toLowerCase();
+            var courseDepart = document.getElementById('course_depart').value.toLowerCase();
+
+            // 檢查是否所有的 checkbox 都未被選中
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var noCheckboxChecked = Array.from(checkboxes).every(checkbox => !checkbox.checked);
+
+            if (noCheckboxChecked) {
+                alert("請至少選擇至少一個搜尋條件");
+                return;
+            }
+
+            // 在找到相符合的课程资讯时，将其存储在一个数组中
+            var foundCourses = Object.values(AllClasses).filter(course => {
+                var found = true;
+
+                if (!noCheckboxChecked) {
+                    found = (document.getElementById('course_id_checkbox').checked ? course.No.toLowerCase() === courseId : true) &&
+                        (document.getElementById('course_name_checkbox').checked ? course.name.toLowerCase().includes(courseName) : true) &&
+                        (document.getElementById('course_depart_checkbox').checked ? course.depart.toLowerCase() === courseDepart : true);
+                }
+                return found;
+            });
+
+            if (foundCourses.length > 0) {
+                // 找到符合条件的课程资讯，将它们一一显示在界面上
+                var courseInfoContainer = document.getElementById('course-info');
+                courseInfoContainer.innerHTML = '';
+
+                foundCourses.forEach(foundCourse => {
+                    if( foundCourse.Time_Start_to_End_3 != undefined ){
+                    courseInfoContainer.innerHTML += `
+                        <h2>${foundCourse.name}</h2>
+                        <p>Course ID: ${foundCourse.No}</p>
+                        <p>Department: ${foundCourse.depart}</p>
+                        <p>Time 1: ${foundCourse.Time_Start_to_End_1}</p>
+                        <p>Time 2: ${foundCourse.Time_Start_to_End_2}</p>
+                        <p>Time 3: ${foundCourse.Time_Start_to_End_3}</p>
+                        <p>Teacher: ${foundCourse.Teacher}</p>
+                        <p>Current Enrolled: ${foundCourse.amount_current}</p>
+                        <p>Full Capacity: ${foundCourse.amount_full}</p>
+                        <hr> <!-- 分隔线 -->
+                        `;
+                    }
+                    else if( foundCourse.Time_Start_to_End_2 != undefined ){
+                        courseInfoContainer.innerHTML += `
+                        <h2>${foundCourse.name}</h2>
+                        <p>Course ID: ${foundCourse.No}</p>
+                        <p>Department: ${foundCourse.depart}</p>
+                        <p>Time 1: ${foundCourse.Time_Start_to_End_1}</p>
+                        <p>Time 2: ${foundCourse.Time_Start_to_End_2}</p>
+                        <p>Teacher: ${foundCourse.Teacher}</p>
+                        <p>Current Enrolled: ${foundCourse.amount_current}</p>
+                        <p>Full Capacity: ${foundCourse.amount_full}</p>
+                        <hr> <!-- 分隔线 -->
+                        `;
+                    }
+                    else{
+                        courseInfoContainer.innerHTML += `
+                        <h2>${foundCourse.name}</h2>
+                        <p>Course ID: ${foundCourse.No}</p>
+                        <p>Department: ${foundCourse.depart}</p>
+                        <p>Time 1: ${foundCourse.Time_Start_to_End_1}</p>
+                        <p>Teacher: ${foundCourse.Teacher}</p>
+                        <p>Current Enrolled: ${foundCourse.amount_current}</p>
+                        <p>Full Capacity: ${foundCourse.amount_full}</p>
+                        <hr> <!-- 分隔线 -->
+                        `;
+                    }
+                });
+            } else {
+                // 若未找到相符合的课程资讯，显示提示信息
+                var courseInfoContainer = document.getElementById('course-info');
+                courseInfoContainer.innerHTML = `<p>找不到符合上述条件的课程</p>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
